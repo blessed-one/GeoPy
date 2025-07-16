@@ -5,6 +5,7 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 
 services.AddPostgresDb(configuration);
+services.AddAuth(configuration);
 
 var app = builder.Build();
 

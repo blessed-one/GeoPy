@@ -1,6 +1,8 @@
 using Core.Interfaces.Auth;
-using Core.Interfaces.Repositories;
-using Core.Models;
+using Domain.Contracts.Providers;
+using Domain.Contracts.Repositories;
+using Domain.Contracts.Security;
+using Domain.Models;
 
 namespace Infrastructure.Auth;
 

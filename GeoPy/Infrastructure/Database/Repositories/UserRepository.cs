@@ -1,5 +1,5 @@
-using Core.Interfaces.Repositories;
-using Core.Models;
+using Domain.Contracts.Repositories;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Database.Repositories;
@@ -22,6 +22,7 @@ public class UserRepository(AppDbContext dbContext) : IUserRepository
             throw new ArgumentException("User with such email already exists");
         
         var userEntityEntry = await dbContext.Users.AddAsync(user);
+        await dbContext.SaveChangesAsync();
         
         return userEntityEntry.Entity.Id;
     }

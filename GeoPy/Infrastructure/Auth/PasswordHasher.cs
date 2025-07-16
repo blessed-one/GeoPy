@@ -1,4 +1,4 @@
-using Core.Interfaces.Auth;
+using Domain.Contracts.Security;
 
 namespace Infrastructure.Auth;
 

@@ -1,6 +1,6 @@
-using Core.Models;
+using Domain.Models;
 
-namespace Core.Interfaces.Auth;
+namespace Domain.Contracts.Providers;
 
 public interface IJwtProvider
 {

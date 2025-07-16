@@ -1,25 +1,35 @@
-﻿services:
-  api:
+﻿name: geopy-service
+
+services:
+  geo-api:
     image: geopy_api
-    build:
-      context: .
-      dockerfile: API/Dockerfile
+    container_name: geo-api
+    build: .
     environment:
-      - ConnectionStrings__AppDbContext=Host=db;Port=5432;Username=postgres;Password=postgres;Database=gym_bro_db
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__AppDbContext: Host=db;Port=5432;Username=postgres;Password=postgres;Database=geopy_db
+    ports:
+      - "5001:5000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
-    image: postgres:latest
-    container_name: postgres
-    ports:
-      - "5433:5432"
+    image: postgres:15-alpine
+    container_name: geo-postgres
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=geopy_db
+    ports:
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-        
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d userdb" ]
+      timeout: 5s
+      interval: 5s
+      retries: 5
+         
 volumes:
   postgres_data:

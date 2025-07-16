@@ -23,7 +23,7 @@ namespace Infrastructure.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Core.Models.Field", b =>
+            modelBuilder.Entity("Application.Models.Field", b =>
                 {
                     b.Property<int>("FieldId")
                         .ValueGeneratedOnAdd()
@@ -54,7 +54,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("fields", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Models.User", b =>
+            modelBuilder.Entity("Application.Models.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -84,7 +84,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Models.Well", b =>
+            modelBuilder.Entity("Application.Models.Well", b =>
                 {
                     b.Property<int>("WellId")
                         .ValueGeneratedOnAdd()
@@ -124,9 +124,9 @@ namespace Infrastructure.Migrations
                     b.ToTable("wells", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Models.Well", b =>
+            modelBuilder.Entity("Application.Models.Well", b =>
                 {
-                    b.HasOne("Core.Models.Field", "Field")
+                    b.HasOne("Application.Models.Field", "Field")
                         .WithMany("Wells")
                         .HasForeignKey("FieldId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -136,7 +136,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("Field");
                 });
 
-            modelBuilder.Entity("Core.Models.Field", b =>
+            modelBuilder.Entity("Application.Models.Field", b =>
                 {
                     b.Navigation("Wells");
                 });

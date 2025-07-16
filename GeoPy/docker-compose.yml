@@ -1,0 +1,25 @@
+﻿services:
+  api:
+    image: geopy_api
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    environment:
+      - ConnectionStrings__AppDbContext=Host=db;Port=5432;Username=postgres;Password=postgres;Database=gym_bro_db
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=geopy_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+        
+volumes:
+  postgres_data:

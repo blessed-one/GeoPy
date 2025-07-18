@@ -1,3 +1,5 @@
+using API;
+using Application;
 using Infrastructure;
 using Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
@@ -6,7 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-services.AddPostgresDb(configuration);
+services.ConfigureAutoMapper();
+
+services
+    .AddApplication(configuration)
+    .AddInfrastructure(configuration);
 
 var app = builder.Build();
 

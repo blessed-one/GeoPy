@@ -173,63 +173,43 @@ public class ExcelService : IExcelService
         var wells = await _wellRepository.GetAllAsync();
         var fields = await _fieldRepository.GetAllAsync();
 
-        if (wells == null || fields == null)
-            return [];
-        
-        var bytes = await ExportMultipleSheetsAsync(
-            new ExcelSheetData
-            {
-                SheetName = "Скважины",
-                Headers = ["идентификатор скважины", "номер скважины", "наименование месторождения", "дебит", "давление", "дата замера"],
-                Data = wells
-            },
-            new ExcelSheetData
-            {
-                SheetName = "Месторождения",
-                Headers = ["идентификатор месторождения", "наименование месторождения", "код месторождения", "наименование площади"],
-                Data = fields
-            }
-        );
-        
-        return bytes;
+        var wellRecords = wells.Select(w => _mapper.Map<WellExcelImportRecord>(w));
+        var fieldRecords = fields.Select(f => _mapper.Map<FieldExcelImportRecord>(f));
+
+        using var package = new ExcelPackage();
+
+        AddSheetFromData(package, "Скважины", wellRecords);
+        AddSheetFromData(package, "Месторождения", fieldRecords);
+
+        return await package.GetAsByteArrayAsync();
     }
-    
-    private async Task<byte[]> ExportMultipleSheetsAsync(params ExcelSheetData[] sheets)
-    {
-        try
-        {
-            using var package = new ExcelPackage();
 
-            foreach (var sheet in sheets)
+    private static ExcelWorksheet AddSheetFromData<T>(ExcelPackage package, string sheetName, IEnumerable<T> data)
+    {
+        var worksheet = package.Workbook.Worksheets.Add(sheetName);
+
+        var properties = typeof(T).GetProperties()
+            .Where(p => p.IsDefined(typeof(ExcelColumnAttribute), false))
+            .ToArray();
+
+        for (var i = 0; i < properties.Length; i++)
+        {
+            var header = properties[i].GetCustomAttribute<ExcelColumnAttribute>()?.Name ?? properties[i].Name;
+            worksheet.Cells[1, i + 1].Value = header;
+        }
+
+        var row = 2;
+        foreach (var item in data)
+        {
+            for (var col = 0; col < properties.Length; col++)
             {
-                var worksheet = package.Workbook.Worksheets.Add(sheet.SheetName);
-
-                for (var i = 0; i < sheet.Headers.Length; i++)
-                {
-                    worksheet.Cells[1, i + 1].Value = sheet.Headers[i];
-                }
-
-                var dataList = sheet.Data.ToList();
-                if (dataList.Count > 0)
-                {
-                    worksheet.Cells["A2"].LoadFromCollection(dataList);
-                }
+                var value = properties[col].GetValue(item);
+                worksheet.Cells[row, col + 1].Value = value;
             }
+            row++;
+        }
 
-            return await package.GetAsByteArrayAsync();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Ошибка при экспорте в Excel с несколькими листами");
-            throw;
-        }
-    }
-    
-    private class ExcelSheetData
-    {
-        public string SheetName { get; init; } = "";
-        public string[] Headers { get; init; } = [];
-        public IEnumerable<object> Data { get; init; } = [];
+        return worksheet;
     }
 }
 

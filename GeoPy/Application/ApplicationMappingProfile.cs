@@ -12,6 +12,16 @@ public class ApplicationMappingProfile : Profile
             .ForMember(dest => dest.FieldName, opt => 
                 opt.MapFrom(src => src.Field != null ? src.Field.FieldName : null));
 
+        CreateMap<Well, WellExcelImportRecord>()  
+            .ForMember(dest => dest.MeasurementDate, opt =>
+                opt.MapFrom(src => src.MeasurementDate.ToDateTime(TimeOnly.MinValue)))
+            .ForMember(dest => dest.FieldName, opt =>
+                opt.MapFrom(src => src.Field != null ? src.Field.FieldName : null));
+
+        CreateMap<Field, FieldExcelImportRecord>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.FieldName))
+            .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.FieldCode));
+        
         CreateMap<WellDto, Well>();
         
         CreateMap<WellExcelImportRecord, Well>()
@@ -20,12 +30,7 @@ public class ApplicationMappingProfile : Profile
 
         CreateMap<FieldExcelImportRecord, Field>()
             .ForMember(dest => dest.FieldName, opt => opt.MapFrom(src => src.Name))
-            .ForMember(dest => dest.FieldCode, opt =>
-            {
-                int code;
-                opt.MapFrom(src => int.TryParse(src.Code, out code) ? code : 0);
-            })
-            .ForMember(dest => dest.AreaName, opt => opt.MapFrom(src => src.AreaName ?? string.Empty))
+            .ForMember(dest => dest.FieldCode, opt => opt.MapFrom(src => src.Code))
             .ForMember(dest => dest.Wells, opt => opt.Ignore());
     }
 }

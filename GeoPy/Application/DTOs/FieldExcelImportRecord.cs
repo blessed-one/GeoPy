@@ -9,7 +9,7 @@ public class FieldExcelImportRecord
     public string Name { get; set; }
     
     [ExcelColumn("код месторождения")]
-    public string? Code { get; set; }
+    public int Code { get; set; }
     
     [ExcelColumn("наименование площади")]
     public string? AreaName { get; set; }

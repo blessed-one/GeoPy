@@ -17,10 +17,10 @@ public class ExcelService : IExcelService
     private readonly IWellRepository _wellRepository;
     
     private readonly ILogger<ExcelService> _logger;
-    
+
     public ExcelService(
-        IMapper mapper, 
-        IFieldRepository fieldRepository, 
+        IMapper mapper,
+        IFieldRepository fieldRepository,
         IWellRepository wellRepository,
         ILogger<ExcelService> logger)
     {
@@ -28,8 +28,10 @@ public class ExcelService : IExcelService
         _mapper = mapper;
         _fieldRepository = fieldRepository;
         _wellRepository = wellRepository;
+
+        ExcelPackage.License.SetNonCommercialPersonal("My PC");
     }
-    
+
     public async Task<ImportResult> ImportFromExcelAsync(Stream stream)
     {
         stream.Position = 0;

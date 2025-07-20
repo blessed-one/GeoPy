@@ -8,7 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
+builder.Services.AddControllers();
+
 services.ConfigureAutoMapper();
+services.ConfigureSwagger();
 
 services
     .AddApplication(configuration)
@@ -18,8 +21,12 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     MigrateDatabase(app);
 }
+
+app.MapControllers();
 
 app.Run();
 return;

@@ -12,5 +12,6 @@ public class ApiMappingProfile : Profile
         CreateMap<UpdateWellRequest, WellDto>();
         
         CreateMap<WellDto, CreateWellResponse>();
+        CreateMap<ImportResult, ImportFileResponse>();
     }
 }

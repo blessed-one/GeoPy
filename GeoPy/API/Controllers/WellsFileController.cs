@@ -60,7 +60,7 @@ public class WellsFileController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error occurred while exporting wells to Excel");
+            _logger.LogError(ex, "Произошла ошибка при экспорте скважин в Excel");
             return StatusCode(500, "Internal server error");
         }
     }

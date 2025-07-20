@@ -4,7 +4,7 @@ using Microsoft.OpenApi.Models;
 
 namespace API;
 
-public static class ServiceExtensions
+public static class ServicesCollectionExtensions
 {
     public static void ConfigureAutoMapper(this IServiceCollection services)
     {

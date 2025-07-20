@@ -1,4 +1,6 @@
 using System.Text;
+using Application.Services;
+using Application.Services.Interfaces;
 using Core.Interfaces.Auth;
 using Domain.Contracts.Providers;
 using Domain.Contracts.Security;
@@ -12,6 +14,15 @@ namespace Application;
 
 public static class ServicesCollectionExtensions
 {
+    public static IServiceCollection AddApplication(this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.AddScoped<IWellService, WellService>();
+        services.AddScoped<IExcelService, ExcelService>();
+        
+        return services;
+    }
+    
     public static IServiceCollection AddAuth(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddScoped<IPasswordHasher, PasswordHasher>();

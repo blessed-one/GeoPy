@@ -24,6 +24,9 @@ public class ApplicationMappingProfile : Profile
         
         CreateMap<WellDto, Well>();
         
+        CreateMap<WellDto, WellExcelRecord>()
+            .ForMember(dest => dest.MeasurementDate, opt => opt.MapFrom(src => src.MeasurementDate.ToDateTime(TimeOnly.MinValue)));
+
         CreateMap<WellExcelRecord, Well>()
             .ForMember(dest => dest.MeasurementDate, 
                 opt => opt.MapFrom(src => DateOnly.FromDateTime(src.MeasurementDate)));

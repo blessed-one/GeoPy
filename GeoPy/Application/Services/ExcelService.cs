@@ -161,30 +161,16 @@ public class ExcelService : IExcelService
 
         foreach (var wellRecord in wells)
         {
-            // Проверяем существование месторождения по имени
-            if (!existingFieldNames.TryGetValue(wellRecord.FieldName, out var field))
-            {
-                result.WellsSkipped++;
-                continue;
-            }
-
             if (existingWellIds.TryGetValue(wellRecord.WellId, out var existingWellDto))
             {
-                // Обновляем только если есть изменения
-                if (!AreWellsEqual(existingWellDto, wellRecord, field.FieldId))
-                {
-                    
-                    _mapper.Map(wellRecord, existingWellDto);
-                    existingWellDto.FieldId = field.FieldId;
-                    await _wellService.UpdateWellAsync(existingWellDto, cancellationToken);
-                    result.WellsUpdated++;
-                }
+                _mapper.Map(wellRecord, existingWellDto);
+                await _wellService.UpdateWellAsync(existingWellDto);
+                result.WellsUpdated++;
             }
             else
             {
                 var wellDto = _mapper.Map<WellDto>(wellRecord);
-                wellDto.FieldId = field.FieldId;
-                await _wellService.CreateWellAsync(wellDto, cancellationToken);
+                await _wellService.CreateWellAsync(wellDto);
                 result.WellsAdded++;
             }
         }
@@ -228,10 +214,22 @@ public class ExcelService : IExcelService
             for (var col = 0; col < properties.Length; col++)
             {
                 var value = properties[col].GetValue(item);
-                worksheet.Cells[row, col + 1].Value = value;
+                var cell = worksheet.Cells[row, col + 1];
+
+                if (value is DateTime dt)
+                {
+                    cell.Value = dt;
+                    cell.Style.Numberformat.Format = "dd.MM.yyyy";
+                }
+                else
+                {
+                    cell.Value = value;
+                }
             }
             row++;
         }
+        
+        worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
     }
 }
 

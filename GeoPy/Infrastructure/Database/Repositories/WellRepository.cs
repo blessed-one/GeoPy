@@ -25,7 +25,7 @@ public class WellRepository : IWellRepository
 
     public async Task<Well> AddAsync(Well well, CancellationToken cancellationToken = default)
     {
-        var loadedWell= await _context.Fields.FindAsync([well.WellId], cancellationToken: cancellationToken);
+        var loadedWell= await _context.Wells.FindAsync([well.WellId], cancellationToken: cancellationToken);
         if (loadedWell is not null)
         {
             throw new Exception("Запись о сущности Well уже существует");
@@ -44,7 +44,7 @@ public class WellRepository : IWellRepository
             throw new Exception("Не удалось найти запись о сущности Well");
         }
         
-        _context.Wells.Update(well);
+        _context.Entry(loadedWell).CurrentValues.SetValues(well);
         await _context.SaveChangesAsync(cancellationToken);
     }
 

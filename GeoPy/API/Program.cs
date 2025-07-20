@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 services.ConfigureAutoMapper();
 services.ConfigureSwagger();
 
-services.AddAuth(configuration);
+//services.AddAuth(configuration);
 
 services
     .AddApplication(configuration)

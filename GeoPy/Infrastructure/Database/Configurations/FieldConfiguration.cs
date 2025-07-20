@@ -8,6 +8,11 @@ public class FieldConfiguration : IEntityTypeConfiguration<Field>
 {
     public void Configure(EntityTypeBuilder<Field> builder)
     {
+        builder.HasKey(f => f.FieldId);
+
+        // builder.Property(f => f.FieldId)
+        //     .UseIdentityColumn();
+        
         builder.Property(f => f.FieldName)
             .HasMaxLength(100);
         

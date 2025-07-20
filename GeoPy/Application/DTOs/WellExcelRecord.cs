@@ -10,6 +10,9 @@ public class WellExcelRecord
     [ExcelColumn("номер скважины")]
     public string WellNumber { get; set; }
     
+    [ExcelColumn("идентификатор месторождения")]
+    public int FieldId { get; set; }
+    
     [ExcelColumn("наименование месторождения")]
     public string FieldName { get; set; }
     

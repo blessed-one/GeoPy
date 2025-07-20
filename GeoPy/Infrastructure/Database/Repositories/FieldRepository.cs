@@ -25,7 +25,9 @@ public class FieldRepository : IFieldRepository
     }
     public async Task<List<Field>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.Fields.ToListAsync(cancellationToken);
+        return await _context.Fields
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<Field> AddAsync(Field field, CancellationToken cancellationToken = default)
@@ -43,13 +45,14 @@ public class FieldRepository : IFieldRepository
 
     public async Task UpdateAsync(Field field, CancellationToken cancellationToken = default)
     {
-        var loadedField = await _context.Wells.FindAsync([field.FieldId], cancellationToken: cancellationToken);
+        var loadedField = await _context.Fields.FindAsync([field.FieldId], cancellationToken: cancellationToken);
         if (loadedField is null)
         {
             throw new Exception("Не удалось найти запись о сущности Field");
         }
         
-        _context.Fields.Update(field);
+        _context.Entry(loadedField).CurrentValues.SetValues(field);
+        
         await _context.SaveChangesAsync(cancellationToken);
     }
 

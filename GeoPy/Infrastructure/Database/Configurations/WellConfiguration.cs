@@ -8,6 +8,8 @@ public class WellConfiguration : IEntityTypeConfiguration<Well>
 {
     public void Configure(EntityTypeBuilder<Well> builder)
     {
+        builder.HasKey(w => w.WellId);
+        
         builder.Property(w => w.WellNumber)
             .HasMaxLength(100);
 

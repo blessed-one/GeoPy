@@ -27,6 +27,8 @@ public static class ServicesCollectionExtensions
             options.UseNpgsql(configuration.GetConnectionString(nameof(AppDbContext)));
             options.UseSnakeCaseNamingConvention();
         });
+
+        services.AddScoped<IUserRepository, UserRepository>();
         
         return services;
     }

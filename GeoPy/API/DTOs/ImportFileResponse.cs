@@ -1,3 +1,3 @@
 namespace API.DTOs;
 
-public class ImportFileResponse(int FieldsAdded, int WellsAdded, int WellsUpdated, int WellsSkipped);
+public record ImportFileResponse(int FieldsAdded, int FieldsUpdated, int WellsAdded, int WellsUpdated, int WellsSkipped);

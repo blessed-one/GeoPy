@@ -30,6 +30,12 @@ public class FieldRepository : IFieldRepository
 
     public async Task<Field> AddAsync(Field field, CancellationToken cancellationToken = default)
     {
+        var loadedField = await _context.Fields.FindAsync([field.FieldId], cancellationToken: cancellationToken);
+        if (loadedField is not null)
+        {
+            throw new Exception("Запись о сущности Field уже существует");
+        }
+        
         await _context.Fields.AddAsync(field, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
         return field;
@@ -37,6 +43,12 @@ public class FieldRepository : IFieldRepository
 
     public async Task UpdateAsync(Field field, CancellationToken cancellationToken = default)
     {
+        var loadedField = await _context.Wells.FindAsync([field.FieldId], cancellationToken: cancellationToken);
+        if (loadedField is null)
+        {
+            throw new Exception("Не удалось найти запись о сущности Field");
+        }
+        
         _context.Fields.Update(field);
         await _context.SaveChangesAsync(cancellationToken);
     }

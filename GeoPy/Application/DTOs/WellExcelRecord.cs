@@ -1,6 +1,8 @@
+using Application.Attributes;
+
 namespace Application.DTOs;
 
-public class WellExcelImportRecord
+public class WellExcelRecord
 {
     [ExcelColumn("идентификатор скважины")]
     public int WellId { get; set; }

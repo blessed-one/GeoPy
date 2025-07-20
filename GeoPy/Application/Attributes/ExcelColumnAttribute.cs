@@ -1,4 +1,4 @@
-namespace Application.DTOs;
+namespace Application.Attributes;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class ExcelColumnAttribute : Attribute

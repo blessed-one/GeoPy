@@ -1,4 +1,5 @@
 using System.Reflection;
+using Application.Attributes;
 using Application.DTOs;
 using Application.Services.Interfaces;
 using AutoMapper;
@@ -13,21 +14,21 @@ public class ExcelService : IExcelService
 {
     private readonly IMapper _mapper;
     
+    private readonly IWellService _wellService;
     private readonly IFieldRepository _fieldRepository;
-    private readonly IWellRepository _wellRepository;
     
     private readonly ILogger<ExcelService> _logger;
 
     public ExcelService(
         IMapper mapper,
+        IWellService wellService,
         IFieldRepository fieldRepository,
-        IWellRepository wellRepository,
         ILogger<ExcelService> logger)
     {
         _logger = logger;
         _mapper = mapper;
+        _wellService = wellService;
         _fieldRepository = fieldRepository;
-        _wellRepository = wellRepository;
 
         ExcelPackage.License.SetNonCommercialPersonal("My PC");
     }
@@ -36,12 +37,12 @@ public class ExcelService : IExcelService
     {
         stream.Position = 0;
 
-        var fields = await ImportFromExcelAsync<FieldExcelImportRecord>(
+        var fields = ImportFromExcel<FieldExcelRecord>(
             stream, "Месторождения");
             
         stream.Position = 0;
         
-        var wells = await ImportFromExcelAsync<WellExcelImportRecord>(
+        var wells = ImportFromExcel<WellExcelRecord>(
             stream, "Скважины");
             
         var result = await ProcessImportData(fields, wells);
@@ -49,7 +50,7 @@ public class ExcelService : IExcelService
         return result;
     }
     
-    private async Task<IEnumerable<T>> ImportFromExcelAsync<T>(Stream stream, string sheetName) where T : new()
+    private List<T> ImportFromExcel<T>(Stream stream, string sheetName) where T : new()
     {
         try
         {
@@ -70,111 +71,134 @@ public class ExcelService : IExcelService
             var properties = typeof(T).GetProperties();
             var result = new List<T>();
             
+            var headerMap = new Dictionary<int, PropertyInfo>();
+
+            for (var column = 1; column <= colCount; column++)
+            {
+                var header = worksheet.Cells[1, column].Value?.ToString()?.Trim();
+
+                if (string.IsNullOrEmpty(header))
+                    continue;
+
+                var property = properties.FirstOrDefault(p =>
+                    p.GetCustomAttribute<ExcelColumnAttribute>()?.Name == header);
+
+                if (property != null)
+                    headerMap[column] = property;
+            }
+
             for (var row = 2; row <= rowCount; row++)
             {
                 var item = new T();
                 var hasData = false;
-                
-                for (var col = 1; col <= colCount; col++)
-                {
-                    var header = worksheet.Cells[1, col].Value?.ToString()?.Trim();
-                    var value = worksheet.Cells[row, col].Value;
-                    
-                    if (string.IsNullOrEmpty(header)) 
-                        continue;
-                    
-                    var property = properties.FirstOrDefault(p => 
-                        p.GetCustomAttribute<ExcelColumnAttribute>()?.Name == header);
 
-                    if (property == null || value == null) 
-                        continue;
+                foreach (var (column, property) in headerMap)
+                {
+                    var value = worksheet.Cells[row, column].Value;
                     
+                    if (value == null || (value is string s && string.IsNullOrWhiteSpace(s)))
+                        continue;
+
                     try
                     {
-                        var convertedValue = Convert.ChangeType(value, property.PropertyType);
+                        var targetType = Nullable.GetUnderlyingType(property.PropertyType) ?? property.PropertyType;
+                        var convertedValue = Convert.ChangeType(value, targetType);
+                        
                         property.SetValue(item, convertedValue);
+                        
                         hasData = true;
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "Error converting value {Value} for property {Property}", value, property.Name);
+                        _logger.LogWarning(ex, "Не удалось преобразовать значение {Value} для свойства {Property}", value, property.Name);
                     }
                 }
                 
                 if (hasData)
-                {
                     result.Add(item);
-                }
             }
             
-            return await Task.FromResult(result);
+            return result;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Произошла ошибка при импорте данных из Excel: {sheetName}", sheetName);
+            _logger.LogError(ex, "Произошла ошибка при импорте данных из Excel с листа {sheetName}", sheetName);
             throw;
         }
     }
 
     private async Task<ImportResult> ProcessImportData(
-        IEnumerable<FieldExcelImportRecord> fields,
-        IEnumerable<WellExcelImportRecord> wells)
+        IEnumerable<FieldExcelRecord> fields,
+        IEnumerable<WellExcelRecord> wells)
     {
         var result = new ImportResult();
         
-        var fieldDict = new Dictionary<string, Field>();
-
-        foreach (var field in fields)
+        var existingFieldIds = (await _fieldRepository.GetAllAsync())
+            .ToDictionary(f => f.FieldId, f => f);
+        
+        foreach (var fieldRecord in fields)
         {
-            var existingField = await _fieldRepository.GetByIdAsync(field.FieldId);
-            if (existingField == null)
+            if (existingFieldIds.TryGetValue(fieldRecord.FieldId, out var existingField))
             {
-                var newField = _mapper.Map<Field>(field);
-                await _fieldRepository.AddAsync(newField);
-                fieldDict[field.Name] = newField;
-                result.FieldsAdded++;
+                _mapper.Map(fieldRecord, existingField);
+                await _fieldRepository.UpdateAsync(existingField);
+               
+                result.FieldsUpdated++;
             }
             else
             {
-                fieldDict[field.Name] = existingField;
+                var newField = _mapper.Map<Field>(fieldRecord);
+                await _fieldRepository.AddAsync(newField);
+                
+                existingFieldIds[newField.FieldId] = newField;
+                
+                result.FieldsAdded++;
             }
         }
 
-        foreach (var well in wells)
+        var existingWellIds = (await _wellService.GetAllWellsAsync())
+            .ToDictionary(w => w.WellId, w => w);
+
+        foreach (var wellRecord in wells)
         {
-            if (!fieldDict.TryGetValue(well.FieldName, out var field))
+            // Проверяем существование месторождения по имени
+            if (!existingFieldNames.TryGetValue(wellRecord.FieldName, out var field))
             {
                 result.WellsSkipped++;
                 continue;
             }
 
-            var existingWell = await _wellRepository.GetByIdAsync(well.WellId);
-            if (existingWell == null)
+            if (existingWellIds.TryGetValue(wellRecord.WellId, out var existingWellDto))
             {
-                var newWell = _mapper.Map<Well>(well);
-                newWell.FieldId = field.FieldId;
-                await _wellRepository.AddAsync(newWell);
-                result.WellsAdded++;
+                // Обновляем только если есть изменения
+                if (!AreWellsEqual(existingWellDto, wellRecord, field.FieldId))
+                {
+                    
+                    _mapper.Map(wellRecord, existingWellDto);
+                    existingWellDto.FieldId = field.FieldId;
+                    await _wellService.UpdateWellAsync(existingWellDto, cancellationToken);
+                    result.WellsUpdated++;
+                }
             }
             else
             {
-                _mapper.Map(well, existingWell);
-                existingWell.FieldId = field.FieldId;
-                await _wellRepository.UpdateAsync(existingWell);
-                result.WellsUpdated++;
+                var wellDto = _mapper.Map<WellDto>(wellRecord);
+                wellDto.FieldId = field.FieldId;
+                await _wellService.CreateWellAsync(wellDto, cancellationToken);
+                result.WellsAdded++;
             }
         }
 
         return result;
     }
-
+    
     public async Task<byte[]> ExportToExcelAsync()
     {
-        var wells = await _wellRepository.GetAllAsync();
+        var wells = await _wellService.GetAllWellsAsync();
         var fields = await _fieldRepository.GetAllAsync();
 
-        var wellRecords = wells.Select(w => _mapper.Map<WellExcelImportRecord>(w));
-        var fieldRecords = fields.Select(f => _mapper.Map<FieldExcelImportRecord>(f));
+        var wellRecords = wells.Select(w => _mapper.Map<WellExcelRecord>(w));
+        var fieldRecords = fields.Select(f => _mapper.Map<FieldExcelRecord>(f));
 
         using var package = new ExcelPackage();
 
@@ -184,7 +208,7 @@ public class ExcelService : IExcelService
         return await package.GetAsByteArrayAsync();
     }
 
-    private static ExcelWorksheet AddSheetFromData<T>(ExcelPackage package, string sheetName, IEnumerable<T> data)
+    private static void AddSheetFromData<T>(ExcelPackage package, string sheetName, IEnumerable<T> data)
     {
         var worksheet = package.Workbook.Worksheets.Add(sheetName);
 
@@ -208,8 +232,6 @@ public class ExcelService : IExcelService
             }
             row++;
         }
-
-        return worksheet;
     }
 }
 

@@ -1,6 +1,8 @@
+using Application.Attributes;
+
 namespace Application.DTOs;
 
-public class FieldExcelImportRecord
+public class FieldExcelRecord
 {
     [ExcelColumn("идентификатор месторождения")]
     public int FieldId { get; set; }

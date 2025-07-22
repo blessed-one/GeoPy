@@ -1,7 +1,7 @@
-namespace Core.Interfaces.Auth;
+namespace Application.Interfaces.Auth;
 
 public interface IAuthService
 {
-    Task<string> Login(string email, string password);
-    Task Register(string email, string password);
+    Task<string> LoginAsync(string email, string password);
+    Task RegisterAsync(string email, string password);
 }

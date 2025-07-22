@@ -1,7 +1,8 @@
 using System.Text;
+using Application.Auth;
+using Application.Interfaces.Auth;
 using Application.Services;
 using Application.Services.Interfaces;
-using Core.Interfaces.Auth;
 using Domain.Contracts.Providers;
 using Domain.Contracts.Security;
 using Infrastructure.Auth;

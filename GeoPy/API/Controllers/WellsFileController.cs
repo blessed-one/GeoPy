@@ -1,6 +1,7 @@
 using API.DTOs;
 using Application.Services.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
@@ -23,6 +24,7 @@ public class WellsFileController : ControllerBase
         _excelService = excelService;
     }
     
+    [Authorize]
     [HttpPost("import")]
     public async Task<ActionResult<ImportFileResponse>> ImportFromExcel(IFormFile? file)
     {
@@ -47,6 +49,7 @@ public class WellsFileController : ControllerBase
     }
     
 
+    [Authorize]
     [HttpGet("export")]
     public async Task<IActionResult> ExportToExcel()
     {

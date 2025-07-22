@@ -13,9 +13,6 @@ public class WellExcelRecord
     [ExcelColumn("идентификатор месторождения")]
     public int FieldId { get; set; }
     
-    [ExcelColumn("наименование месторождения")]
-    public string FieldName { get; set; }
-    
     [ExcelColumn("дебит")]
     public int Debit { get; set; }
     

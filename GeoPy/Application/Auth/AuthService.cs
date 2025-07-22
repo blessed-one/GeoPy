@@ -1,10 +1,10 @@
-using Core.Interfaces.Auth;
+using Application.Interfaces.Auth;
 using Domain.Contracts.Providers;
 using Domain.Contracts.Repositories;
 using Domain.Contracts.Security;
 using Domain.Models;
 
-namespace Infrastructure.Auth;
+namespace Application.Auth;
 
 public class AuthService(
     IUserRepository userRepository,
@@ -12,7 +12,7 @@ public class AuthService(
     IJwtProvider jwtProvider
 ) : IAuthService
 {
-    public async Task<string> Login(string email, string password)
+    public async Task<string> LoginAsync(string email, string password)
     {
         var user = await userRepository.GetUserByEmailAsync(email);
         if (user is null)
@@ -24,7 +24,7 @@ public class AuthService(
         throw new UnauthorizedAccessException();
     }
 
-    public async Task Register(string email, string password)
+    public async Task RegisterAsync(string email, string password)
     {
         var newUser = new User
         {

@@ -12,12 +12,10 @@ public class ApplicationMappingProfile : Profile
             .ForMember(dest => dest.FieldName, opt => 
                 opt.MapFrom(src => src.Field != null ? src.Field.FieldName : null));
 
-        CreateMap<Well, WellExcelRecord>()  
+        CreateMap<Well, WellExcelRecord>()
             .ForMember(dest => dest.MeasurementDate, opt =>
-                opt.MapFrom(src => src.MeasurementDate.ToDateTime(TimeOnly.MinValue)))
-            .ForMember(dest => dest.FieldName, opt =>
-                opt.MapFrom(src => src.Field != null ? src.Field.FieldName : null));
-
+                opt.MapFrom(src => src.MeasurementDate.ToDateTime(TimeOnly.MinValue)));
+            
         CreateMap<Field, FieldExcelRecord>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.FieldName))
             .ForMember(dest => dest.Code, opt => opt.MapFrom(src => src.FieldCode));

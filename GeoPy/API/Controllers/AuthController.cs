@@ -34,6 +34,7 @@ public class AuthController(IAuthService authService, ILogger<AuthController> lo
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Register([FromForm] UserRegAuthRequest request)
     {
         try
@@ -41,6 +42,10 @@ public class AuthController(IAuthService authService, ILogger<AuthController> lo
             await authService.RegisterAsync(request.Email, request.Password);
 
             return Created();
+        }
+        catch (ArgumentException argEx)
+        {
+            return Conflict(argEx.Message);
         }
         catch (Exception ex)
         {

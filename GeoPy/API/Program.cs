@@ -19,6 +19,18 @@ services
     .AddApplication(configuration)
     .AddInfrastructure(configuration);
 
+builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
+{
+    var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()
+                  ?? throw new ApplicationException("CorsPolicy is not configured");
+    policyBuilder
+        .WithOrigins(origins)
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowCredentials();
+}));
+
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -27,6 +39,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     MigrateDatabase(app);
 }
+
+app.UseCors();
 
 app.MapControllers();
 

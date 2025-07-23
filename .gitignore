@@ -381,4 +381,4 @@ release-files
 *.sw?
 
 # Ignore config files for development
-appsettings.Development.json
+# appsettings.Development.json

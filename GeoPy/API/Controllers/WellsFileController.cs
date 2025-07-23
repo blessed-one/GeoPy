@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/wells")]
 public class WellsFileController : ControllerBase
 {
@@ -24,7 +25,6 @@ public class WellsFileController : ControllerBase
         _excelService = excelService;
     }
     
-    [Authorize]
     [HttpPost("import")]
     public async Task<ActionResult<ImportFileResponse>> ImportFromExcel(IFormFile? file)
     {
@@ -49,7 +49,6 @@ public class WellsFileController : ControllerBase
     }
     
 
-    [Authorize]
     [HttpGet("export")]
     public async Task<IActionResult> ExportToExcel()
     {

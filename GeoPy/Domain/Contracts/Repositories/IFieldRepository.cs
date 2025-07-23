@@ -9,6 +9,6 @@ public interface IFieldRepository
     Task<List<Field>> GetAllAsync(CancellationToken cancellationToken = default);
     
     Task<Field> AddAsync(Field field, CancellationToken cancellationToken = default);
-    Task UpdateAsync(Field field, CancellationToken cancellationToken = default);
+    Task<bool> UpdateAsync(Field field, CancellationToken cancellationToken = default);
     Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

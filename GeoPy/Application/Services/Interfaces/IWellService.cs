@@ -9,5 +9,4 @@ public interface IWellService
     Task<WellDto> CreateWellAsync(WellDto dto);
     Task UpdateWellAsync(WellDto dto);
     Task DeleteWellAsync(int id);
-    Task<IEnumerable<WellDto>> GetWellsByFieldAsync(int fieldId);
 }

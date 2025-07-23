@@ -1,6 +1,6 @@
-using Application.Attributes;
+using Infrastructure.Attributes;
 
-namespace Application.DTOs;
+namespace Infrastructure.Models;
 
 public class FieldExcelRecord
 {

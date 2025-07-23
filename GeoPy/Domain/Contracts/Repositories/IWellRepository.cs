@@ -8,6 +8,6 @@ public interface IWellRepository
     Task<List<Well>> GetAllAsync(CancellationToken cancellationToken = default);
     
     Task<Well> AddAsync(Well well, CancellationToken cancellationToken = default);
-    Task UpdateAsync(Well well, CancellationToken cancellationToken = default);
+    Task<bool> UpdateAsync(Well well, CancellationToken cancellationToken = default);
     Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default);
 }

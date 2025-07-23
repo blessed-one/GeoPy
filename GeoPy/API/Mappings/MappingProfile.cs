@@ -1,17 +1,21 @@
-namespace API;
-
 using API.DTOs;
+using API.DTOs.Requests;
+using API.DTOs.Responses;
 using Application.DTOs;
 using AutoMapper;
 
-public class ApiMappingProfile : Profile
+namespace API.Mappings;
+
+public class MappingProfile : Profile
 {
-    public ApiMappingProfile()
+    public MappingProfile()
     {
         CreateMap<CreateWellRequest, WellDto>();
         CreateMap<UpdateWellRequest, WellDto>();
         
         CreateMap<WellDto, CreateWellResponse>();
-        CreateMap<ImportResult, ImportFileResponse>();
+        CreateMap<ExcelImportResult, ImportFileResponse>();
+        
+        
     }
 }

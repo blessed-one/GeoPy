@@ -25,6 +25,10 @@ public class WellRepository : IWellRepository
 
     public async Task<Well> AddAsync(Well well, CancellationToken cancellationToken = default)
     {
+        Console.WriteLine(new string('-', 50));
+        Console.WriteLine(new string('-', 50));
+        Console.WriteLine(well.WellId);
+        //well.WellId = 0;
         var loadedWell= await _context.Wells.FindAsync([well.WellId], cancellationToken: cancellationToken);
         if (loadedWell is not null)
         {
@@ -36,7 +40,7 @@ public class WellRepository : IWellRepository
         return well;
     }
 
-    public async Task UpdateAsync(Well well, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateAsync(Well well, CancellationToken cancellationToken = default)
     {
         var loadedWell = await _context.Wells.FindAsync([well.WellId], cancellationToken: cancellationToken);
         if (loadedWell is null)
@@ -44,8 +48,20 @@ public class WellRepository : IWellRepository
             throw new Exception("Не удалось найти запись о сущности Well");
         }
         
-        _context.Entry(loadedWell).CurrentValues.SetValues(well);
+        var entry = _context.Entry(loadedWell);
+        var initialValues = entry.CurrentValues.Clone();
+    
+        entry.CurrentValues.SetValues(well);
+    
+        var hasChanges = !entry.CurrentValues.Properties
+            .All(property => 
+                Equals(initialValues[property], entry.CurrentValues[property]));
+
+        if (!hasChanges) 
+            return false;
+        
         await _context.SaveChangesAsync(cancellationToken);
+        return true; 
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)

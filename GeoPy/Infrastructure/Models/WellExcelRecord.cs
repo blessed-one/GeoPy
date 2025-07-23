@@ -1,6 +1,6 @@
-using Application.Attributes;
+using Infrastructure.Attributes;
 
-namespace Application.DTOs;
+namespace Infrastructure.Models;
 
 public class WellExcelRecord
 {
@@ -10,8 +10,8 @@ public class WellExcelRecord
     [ExcelColumn("номер скважины")]
     public string WellNumber { get; set; }
     
-    [ExcelColumn("идентификатор месторождения")]
-    public int FieldId { get; set; }
+    [ExcelColumn("наименование месторождения")]
+    public string FieldName { get; set; }
     
     [ExcelColumn("дебит")]
     public int Debit { get; set; }

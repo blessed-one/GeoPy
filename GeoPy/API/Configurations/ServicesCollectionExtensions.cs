@@ -1,8 +1,8 @@
 using API.Filters;
-using Application;
+using Infrastructure.Mappings;
 using Microsoft.OpenApi.Models;
 
-namespace API;
+namespace API.Configurations;
 
 public static class ServicesCollectionExtensions
 {
@@ -10,8 +10,9 @@ public static class ServicesCollectionExtensions
     {
         services.AddAutoMapper(cfg =>
         {
-            cfg.AddProfile<ApiMappingProfile>();
-            cfg.AddProfile<ApplicationMappingProfile>();
+            cfg.AddProfile<API.Mappings.MappingProfile>();
+            cfg.AddProfile<MappingProfile>();
+            cfg.AddProfile<Application.Mappings.MappingProfile>();
         });
     }
 

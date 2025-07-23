@@ -43,7 +43,7 @@ public class FieldRepository : IFieldRepository
         return field;
     }
 
-    public async Task UpdateAsync(Field field, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateAsync(Field field, CancellationToken cancellationToken = default)
     {
         var loadedField = await _context.Fields.FindAsync([field.FieldId], cancellationToken: cancellationToken);
         if (loadedField is null)
@@ -51,9 +51,20 @@ public class FieldRepository : IFieldRepository
             throw new Exception("Не удалось найти запись о сущности Field");
         }
         
-        _context.Entry(loadedField).CurrentValues.SetValues(field);
+        var entry = _context.Entry(loadedField);
+        var initialValues = entry.CurrentValues.Clone();
+    
+        entry.CurrentValues.SetValues(field);
+    
+        var hasChanges = !entry.CurrentValues.Properties
+            .All(property => 
+                Equals(initialValues[property], entry.CurrentValues[property]));
+
+        if (!hasChanges) 
+            return false;
         
         await _context.SaveChangesAsync(cancellationToken);
+        return true; 
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)

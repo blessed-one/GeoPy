@@ -10,8 +10,8 @@ public class FieldConfiguration : IEntityTypeConfiguration<Field>
     {
         builder.HasKey(f => f.FieldId);
 
-        // builder.Property(f => f.FieldId)
-        //     .UseIdentityColumn();
+        builder.Property(w => w.FieldId)
+            .ValueGeneratedOnAdd();
         
         builder.Property(f => f.FieldName)
             .HasMaxLength(100);
@@ -20,6 +20,8 @@ public class FieldConfiguration : IEntityTypeConfiguration<Field>
             .HasMaxLength(100);
 
         builder.HasMany(f => f.Wells)
-            .WithOne(w => w.Field);
+            .WithOne(w => w.Field)
+            .HasForeignKey(w => w.FieldId)
+            .OnDelete(DeleteBehavior.Cascade); 
     }
 }

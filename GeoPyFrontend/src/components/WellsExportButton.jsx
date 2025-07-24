@@ -1,4 +1,5 @@
 import React from 'react';
+import {Button} from './UI/Button/Button.jsx'
 import {axiosToBackend} from "../hooks/useAxios.js";
 
 const WellsExportButton = () => {
@@ -21,7 +22,7 @@ const WellsExportButton = () => {
     };
 
     return (
-        <button onClick={handleExport}>📤 Экспортировать Excel</button>
+        <Button text={'📤 Экспортировать Excel'} onClick={handleExport}></Button>
     );
 };
 

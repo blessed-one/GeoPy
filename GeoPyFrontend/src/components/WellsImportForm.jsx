@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import {axiosToBackend} from "../hooks/useAxios.js";
+import {Button} from "./UI/Button/Button.jsx";
 
 const WellsImportForm = () => {
     const [file, setFile] = useState(null);
@@ -19,7 +20,7 @@ const WellsImportForm = () => {
                 },
             });
             const { wellsAdded, wellsUpdated } = response.data;
-            setStatus(`✅ Импорт: добавлено ${wellsAdded}, обновлено ${wellsUpdated}`);
+            setStatus(`✅ Импорт: добавлено ${wellsAdded}, обновлено ${wellsUpdated}. Обновите страницу`);
         } catch (error) {
             setStatus('❌ Ошибка при импорте');
             console.error(error);
@@ -28,9 +29,12 @@ const WellsImportForm = () => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <input type="file" accept=".xlsx" onChange={e => setFile(e.target.files[0])} />
-            <button type="submit">📥 Импортировать Excel</button>
-            <p>{status}</p>
+            <div style={{marginTop: '50px'}}>
+                <input type="file" accept=".xlsx" onChange={e => setFile(e.target.files[0])}/>
+                <Button text={"📥 Импортировать Excel"} type="submit"></Button>
+                <p>{status}</p>
+            </div>
+
         </form>
     );
 };

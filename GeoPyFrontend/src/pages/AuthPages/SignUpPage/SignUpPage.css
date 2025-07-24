@@ -7,6 +7,10 @@
     align-items: center;
 }
 
+.banner-sign-up {
+    width: 45%;
+}
+
 .title-sign-up {
     display: flex;
     justify-content: center;

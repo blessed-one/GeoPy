@@ -14,13 +14,8 @@ const useAuth = () => {
                 } else {
                     return {error: response.data.error };
                 }}).catch((e) => {
-                console.error(e);
-                if (e.status === 409) {
-                    return {error: e.response.data}
-                } else {
-                    return {error: e.message};
-                }
-            }).finally(() => setLoading(false));
+                return errorProcessing(e)
+                }).finally(() => setLoading(false));
     }
 
     async function login(userData) {
@@ -31,13 +26,20 @@ const useAuth = () => {
                     await authStore.login(response.data);
                     return {error: null };
                 }}).catch((e) => {
-                    console.error(e);
-                    if (e.status === 401) {
-                        return {error: e.response.data}
-                    } else {
-                        return {error: e.message};
-                    }
+                    return errorProcessing(e)
                 }).finally(() => setLoading(false));
+    }
+
+    function errorProcessing(error) {
+        switch (error.status) {
+            case 401:
+            case 409:
+                return {error: error.response.data}
+            case 400:
+                return {error: `${error.response.data.title} ${error.response.data.errors?.Email ?? ''} ${error.response.data.errors?.Password ?? ''}`}
+            default:
+                return {error: error.message}
+        }
     }
 
     return { loading, register, login };

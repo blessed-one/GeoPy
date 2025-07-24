@@ -42,7 +42,7 @@ const SignInPage = () => {
                 <div className={'title-sign-in'}>
                     <h1>SIGN IN</h1>
                 </div>
-                <Banner>
+                <Banner className={'banner-sign-in'}>
                     <form className={'sign-in-form'}>
                         <div className={'label-input-sign-in'}>
                             <label htmlFor={'name'}>Enter your email</label>

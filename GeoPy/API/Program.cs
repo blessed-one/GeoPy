@@ -45,6 +45,9 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.Run();
 return;
 

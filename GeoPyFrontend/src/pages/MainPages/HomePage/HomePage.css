@@ -1,0 +1,21 @@
+.post-list {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+}
+.post-list-banner {
+    gap: 10px;
+    width: 65%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.post-list-buttons {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.post-list-buttons Button {
+    max-width: 20%;
+}

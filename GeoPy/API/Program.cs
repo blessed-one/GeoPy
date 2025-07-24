@@ -19,7 +19,7 @@ services
     .AddApplication(configuration)
     .AddInfrastructure(configuration);
 
-builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
+services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
 {
     var origins = builder.Configuration.GetSection("CorsPolicy:Origins").Get<string[]>()
                   ?? throw new ApplicationException("CorsPolicy is not configured");
@@ -30,8 +30,9 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policyBuilder =>
         .AllowCredentials();
 }));
 
-
 var app = builder.Build();
+
+app.UseCors();
 
 if (app.Environment.IsDevelopment())
 {
@@ -40,7 +41,6 @@ if (app.Environment.IsDevelopment())
     MigrateDatabase(app);
 }
 
-app.UseCors();
 
 app.MapControllers();
 

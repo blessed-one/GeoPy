@@ -1,19 +1,14 @@
-import { useState } from 'react'
 import './App.css'
-import WellsImportForm from "./components/WellsImportForm.jsx";
-import WellsExportButton from "./components/WellsExportButton.jsx";
-import WellsTable from "./components/WellsTable.jsx";
+import {RouterProvider} from "react-router-dom";
+import router from './router/router';
+import {ToastContainer} from "react-toastify";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
       <>
           <div>
-              <h1>Скважины</h1>
-              <WellsTable/>
-              <WellsImportForm/>
-              <WellsExportButton/>
+              <RouterProvider router={router}/>
+              <ToastContainer />
           </div>
       </>
   )

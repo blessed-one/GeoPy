@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {axiosToBackend} from "../hooks/useAxios.jsx";
+import {axiosToBackend} from "../hooks/useAxios.js";
 
 const WellsImportForm = () => {
     const [file, setFile] = useState(null);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 } from '@mui/material';
-import {axiosToBackend} from "../hooks/useAxios.jsx";
+import {axiosToBackend} from "../hooks/useAxios.js";
 
 const WellsTable = () => {
     const [wells, setWells] = useState([]);

@@ -9,5 +9,6 @@ export const axiosToBackend = axios.create({
 
 axiosToBackend.interceptors.request.use((config) => {
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`;
+    config.headers.ContentType = 'multipart/form-data';
     return config;
 })

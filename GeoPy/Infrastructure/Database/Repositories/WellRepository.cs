@@ -16,19 +16,21 @@ public class WellRepository : IWellRepository
 
     public async Task<Well?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
     { 
-        return await _context.Wells.FirstOrDefaultAsync(w => w.WellId == id, cancellationToken);
+        return await _context.Wells
+            .Include(w => w.Field)
+            .AsNoTracking() 
+            .FirstOrDefaultAsync(w => w.WellId == id, cancellationToken);
     }
     public async Task<List<Well>> GetAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _context.Wells.ToListAsync(cancellationToken);
+        return await _context.Wells
+            .Include(w => w.Field)
+            .AsNoTracking() 
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<Well> AddAsync(Well well, CancellationToken cancellationToken = default)
     {
-        Console.WriteLine(new string('-', 50));
-        Console.WriteLine(new string('-', 50));
-        Console.WriteLine(well.WellId);
-        //well.WellId = 0;
         var loadedWell= await _context.Wells.FindAsync([well.WellId], cancellationToken: cancellationToken);
         if (loadedWell is not null)
         {

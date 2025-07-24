@@ -34,8 +34,7 @@ public class WellsController : ControllerBase
         try
         {
             var wells = await _wellService.GetAllWellsAsync();
-            var result = _mapper.Map<List<WellDto>>(wells);
-            return Ok(result);
+            return Ok(wells);
         }
         catch (Exception ex)
         {

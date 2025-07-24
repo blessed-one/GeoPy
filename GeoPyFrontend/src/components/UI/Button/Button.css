@@ -1,0 +1,44 @@
+button {
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    padding: 10px 21px;
+    font-size: 24px;
+
+    background-color: var(--blue-500);
+
+    cursor: pointer;
+    fill: var(--gray-800);
+
+    transition: 0.2s linear;
+}
+
+button p {
+    color: inherit;
+}
+
+button:hover {
+    color: whitesmoke;
+    background-color: royalblue;
+}
+
+.button-big {
+    padding: 30px 0;
+}
+
+button .icon {
+    margin-left: 10px;
+}
+
+button .icon:first-child {
+    margin-left: 0;
+}
+
+.button-rounded {
+    border-radius: 20px;
+}
+

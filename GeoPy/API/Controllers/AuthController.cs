@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.DTOs.Requests;
 using Application.Interfaces.Auth;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,7 @@ public class AuthController(IAuthService authService, ILogger<AuthController> lo
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> Login([FromForm] UserRegAuthRequest request)
+    public async Task<IActionResult> Login([FromForm] UserRegistrationRequest request)
     {
         try
         {
@@ -35,7 +36,7 @@ public class AuthController(IAuthService authService, ILogger<AuthController> lo
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Register([FromForm] UserRegAuthRequest request)
+    public async Task<IActionResult> Register([FromForm] UserRegistrationRequest request)
     {
         try
         {

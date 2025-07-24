@@ -1,6 +1,6 @@
 using Domain.Contracts.Security;
 
-namespace Infrastructure.Auth;
+namespace Infrastructure.Security;
 
 public class PasswordHasher : IPasswordHasher
 {

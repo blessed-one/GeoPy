@@ -10,10 +10,15 @@ public class WellConfiguration : IEntityTypeConfiguration<Well>
     {
         builder.HasKey(w => w.WellId);
         
+        builder.Property(w => w.WellId)
+            .ValueGeneratedOnAdd();
+        
         builder.Property(w => w.WellNumber)
             .HasMaxLength(100);
 
         builder.HasOne(w => w.Field)
-            .WithMany(f => f.Wells);
+            .WithMany(f => f.Wells)
+            .HasForeignKey(w => w.FieldId)
+            .OnDelete(DeleteBehavior.Cascade); 
     }
 }

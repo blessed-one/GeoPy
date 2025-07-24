@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.DTOs.Responses;
 using Application.Services.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -7,24 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/wells")]
-public class WellsFileController : ControllerBase
+public class FileController : ControllerBase
 {
     private readonly IMapper _mapper;
     private readonly IExcelService _excelService;
-    private readonly ILogger<WellsFileController> _logger;
+    private readonly ILogger<FileController> _logger;
     
-    public WellsFileController(
+    public FileController(
         IMapper mapper, 
         IExcelService excelService,
-        ILogger<WellsFileController> logger)
+        ILogger<FileController> logger)
     {
         _mapper = mapper;
         _logger = logger;
         _excelService = excelService;
     }
     
-    [Authorize]
     [HttpPost("import")]
     public async Task<ActionResult<ImportFileResponse>> ImportFromExcel(IFormFile? file)
     {
@@ -49,7 +50,6 @@ public class WellsFileController : ControllerBase
     }
     
 
-    [Authorize]
     [HttpGet("export")]
     public async Task<IActionResult> ExportToExcel()
     {

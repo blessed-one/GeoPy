@@ -1,4 +1,5 @@
 using API;
+using API.Configurations;
 using Application;
 using Infrastructure;
 using Infrastructure.Database;

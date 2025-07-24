@@ -2,7 +2,7 @@
 
 public class Well
 {
-    public int WellId { get; init; }
+    public int WellId { get; set; }
     public required string WellNumber { get; init; }
     
     public int Debit { get; init; }

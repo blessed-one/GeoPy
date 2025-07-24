@@ -4,7 +4,7 @@ using Domain.Contracts.Repositories;
 using Domain.Contracts.Security;
 using Domain.Models;
 
-namespace Application.Auth;
+namespace Application.Services;
 
 public class AuthService(
     IUserRepository userRepository,

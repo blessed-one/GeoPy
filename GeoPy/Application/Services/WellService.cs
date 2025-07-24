@@ -39,6 +39,7 @@ public class WellService : IWellService
     {
         var well = _mapper.Map<Well>(dto);
         await _repository.AddAsync(well);
+        
         return _mapper.Map<WellDto>(well);
     }
 
@@ -51,10 +52,5 @@ public class WellService : IWellService
     public async Task DeleteWellAsync(int id)
     {
         var well = await _repository.DeleteAsync(id);
-    }
-
-    public async Task<IEnumerable<WellDto>> GetWellsByFieldAsync(int fieldId)
-    {
-        throw new NotImplementedException();
     }
 }

@@ -1,4 +1,6 @@
 using API.DTOs;
+using API.DTOs.Requests;
+using API.DTOs.Responses;
 using Application.DTOs;
 using Application.Services.Interfaces;
 using AutoMapper;
@@ -8,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/wells")]
 public class WellsController : ControllerBase
 {
@@ -25,7 +28,6 @@ public class WellsController : ControllerBase
         _wellService = wellService;
     }
     
-    [Authorize]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<WellDto>>> GetAll()
     {
@@ -42,7 +44,6 @@ public class WellsController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpGet("{id:int}")]
     public async Task<ActionResult<WellDto>> GetById(int id)
     {
@@ -63,7 +64,6 @@ public class WellsController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpPost]
     public async Task<ActionResult<CreateWellResponse>> Create(CreateWellRequest request)
     {
@@ -82,7 +82,6 @@ public class WellsController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateWellRequest request)
     {
@@ -102,7 +101,6 @@ public class WellsController : ControllerBase
         }
     }
 
-    [Authorize]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {

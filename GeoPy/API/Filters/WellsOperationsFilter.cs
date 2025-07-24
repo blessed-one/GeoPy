@@ -1,5 +1,7 @@
 using API.Controllers;
 using API.DTOs;
+using API.DTOs.Requests;
+using API.DTOs.Responses;
 using Application.DTOs;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -34,14 +36,14 @@ public class WellsOperationsFilter : IOperationFilter
                     break;
             }
         }
-        else if (controllerName == nameof(WellsFileController))
+        else if (controllerName == nameof(FileController))
         {
             switch (actionName)
             {
-                case nameof(WellsFileController.ImportFromExcel):
+                case nameof(FileController.ImportFromExcel):
                     ConfigureImportFromExcel(operation, context);
                     break;
-                case nameof(WellsFileController.ExportToExcel):
+                case nameof(FileController.ExportToExcel):
                     ConfigureExportToExcel(operation, context);
                     break;
             }

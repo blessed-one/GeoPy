@@ -68,7 +68,8 @@ const WellFormModal = ({ open, handleClose, refreshData, editData }) => {
                 <TextField style={{boxShadow: "none"}} label="Номер скважины" name="wellNumber" value={formData.wellNumber} onChange={handleChange} fullWidth margin="normal" />
                 <TextField label="Дебит" name="debit" type="number" value={formData.debit} onChange={handleChange} fullWidth margin="normal" />
                 <TextField label="Давление" name="pressure" type="number" value={formData.pressure} onChange={handleChange} fullWidth margin="normal" />
-                <TextField label="Дата замера" name="measurementDate" type="date" value={formData.measurementDate} onChange={handleChange} fullWidth margin="normal" />
+                <TextField label="Дата замера" name="measurementDate" type="date" value={formData.measurementDate} onChange={handleChange} fullWidth margin="normal"
+                           slotProps={{ inputLabel: {shrink: true} }}/>
                 <TextField label="ID месторождения" name="fieldId" type="number" value={formData.fieldId} onChange={handleChange} fullWidth margin="normal" />
                 <Button variant="contained" onClick={handleSubmit} fullWidth>
                     {editData ? 'Обновить' : 'Создать'}

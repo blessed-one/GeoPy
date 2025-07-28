@@ -36,6 +36,10 @@ public class WellRepository : IWellRepository
         {
             throw new Exception("Запись о сущности Well уже существует");
         }
+
+        // Пока не понятно, почему это решает проблему. 
+        // Проблема без явного присвоения 0: duplicate key value violates unique constraint "pk_wells"
+        well.WellId = 0;
         
         await _context.Wells.AddAsync(well, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);

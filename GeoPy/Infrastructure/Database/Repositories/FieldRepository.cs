@@ -37,6 +37,8 @@ public class FieldRepository : IFieldRepository
         {
             throw new Exception("Запись о сущности Field уже существует");
         }
+
+        field.FieldId = 0;
         
         await _context.Fields.AddAsync(field, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
